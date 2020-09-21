@@ -1,8 +1,6 @@
 package com.ulearing.versionmanagement.version.dao;
 
-import com.ulearing.versionmanagement.version.dto.GetLogsRequest;
-import com.ulearing.versionmanagement.version.dto.ProjectTagDTO;
-import com.ulearing.versionmanagement.version.dto.UpdateLogDTO;
+import com.ulearing.versionmanagement.version.dto.*;
 import com.ulearing.versionmanagement.version.model.ProjectModel;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -38,4 +36,11 @@ public interface VersionDao {
 
     @Select("select version as newTag from l_version_tab where projectId = #{id}")
     ProjectTagDTO getNewTag(Integer id);
+
+    List<VersionHisDTO> getVersionHis(@Param("region") Integer region,
+                                      @Param("projectId") Integer projectId);
+
+    Integer insertLog(CommitLogRequest commitLogRequest);
+
+    void insertVersion(ProjectVersionDTO projectVersion);
 }

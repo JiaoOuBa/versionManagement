@@ -2,9 +2,11 @@ package com.ulearing.versionmanagement.version.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sun.istack.internal.NotNull;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Desc
@@ -14,13 +16,13 @@ import java.util.Date;
 public class CommitLogRequest {
 
     @ApiModelProperty("区域")
+    @NotNull
     private Integer region;
     @ApiModelProperty("更新说明")
+    @NotNull
     private String description;
     @ApiModelProperty("提交人")
     private Integer devUserId;
-    @ApiModelProperty("更新人")
-    private Integer opsUserId;
 
     @ApiModelProperty("状态（1.待更新，2.已更新）")
     @JsonIgnore
@@ -28,18 +30,17 @@ public class CommitLogRequest {
     @ApiModelProperty("提交时间")
     @JsonIgnore
     private Date createTime;
-    @ApiModelProperty("更新时间")
-    @JsonIgnore
-    private Date updateTime;
 
-    public CommitLogRequest(Integer region, String description, Integer devUserId, Integer opsUserId, Integer status, Date createTime, Date updateTime) {
+    @ApiModelProperty("项目-版本信息")
+    private List<ProjectVersionDTO> projectVersionList;
+
+    public CommitLogRequest(Integer region, String description, Integer devUserId, Integer status, Date createTime, List<ProjectVersionDTO> projectVersionList) {
         this.region = region;
         this.description = description;
         this.devUserId = devUserId;
-        this.opsUserId = opsUserId;
         this.status = status;
         this.createTime = createTime;
-        this.updateTime = updateTime;
+        this.projectVersionList = projectVersionList;
     }
 
     public Integer getRegion() {
@@ -66,14 +67,6 @@ public class CommitLogRequest {
         this.devUserId = devUserId;
     }
 
-    public Integer getOpsUserId() {
-        return opsUserId;
-    }
-
-    public void setOpsUserId(Integer opsUserId) {
-        this.opsUserId = opsUserId;
-    }
-
     public Integer getStatus() {
         return status;
     }
@@ -90,11 +83,11 @@ public class CommitLogRequest {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
-        return updateTime;
+    public List<ProjectVersionDTO> getProjectVersionList() {
+        return projectVersionList;
     }
 
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
+    public void setProjectVersionList(List<ProjectVersionDTO> projectVersionList) {
+        this.projectVersionList = projectVersionList;
     }
 }

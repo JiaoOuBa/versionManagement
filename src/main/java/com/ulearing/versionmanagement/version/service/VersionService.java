@@ -1,9 +1,7 @@
 package com.ulearing.versionmanagement.version.service;
 
 import com.ulearing.versionmanagement.util.PageUtil;
-import com.ulearing.versionmanagement.version.dto.GetLogsRequest;
-import com.ulearing.versionmanagement.version.dto.ProjectTagDTO;
-import com.ulearing.versionmanagement.version.dto.UpdateLogDTO;
+import com.ulearing.versionmanagement.version.dto.*;
 import com.ulearing.versionmanagement.version.model.ProjectModel;
 
 import java.util.List;
@@ -53,4 +51,18 @@ public interface VersionService {
      * @return
      */
     List<ProjectTagDTO> getNewTag(Integer region);
+
+    /**
+     * 获取单个区域下，单个项目的更新历史
+     * @param region
+     * @param projectId
+     * @return
+     */
+    List<VersionHisDTO> getVersionHis(Integer region, Integer projectId);
+
+    /**
+     * 提交更新日志(多个区域，多个项目的版本)
+     * @param request
+     */
+    void commitLog(List<CommitLogRequest> request);
 }

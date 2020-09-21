@@ -64,16 +64,16 @@ public class VersionController {
     /**
      * 提交更新日志(多个区域，多个项目的版本)
      */
-    /*@PostMapping("/commitLog")
+    @PostMapping("/commitLog")
     @ApiOperation(value = "提交更新日志")
-    public ResultVo commitLog(@RequestBody CommitLogRequest request) {
+    public ResultVo commitLog(@RequestBody List<CommitLogRequest> request) {
         try {
             versionService.commitLog(request);
             return Result.success();
         } catch (Exception e) {
             return Result.error(ResultEnum.FAILED.getCode(), e.getMessage());
         }
-    }*/
+    }
 
     /**
      * 删除更新日志
@@ -110,9 +110,10 @@ public class VersionController {
      */
     @ApiOperation(value = "获取单个区域下，单个项目的更新历史")
     @GetMapping("/getVersionHis")
-    public ResultVo<List<VersionHisDTO>> getVersionHis() {
+    public ResultVo<List<VersionHisDTO>> getVersionHis(@ApiParam("区域") @RequestParam(value = "region") Integer region,
+                                                       @ApiParam("项目id") @RequestParam(value = "projectId") Integer projectId) {
         try {
-            return Result.success();
+            return Result.success(versionService.getVersionHis(region, projectId));
         } catch (Exception e) {
             return Result.error(ResultEnum.FAILED.getCode(), e.getMessage());
         }

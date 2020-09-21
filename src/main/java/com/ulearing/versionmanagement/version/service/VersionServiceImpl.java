@@ -3,18 +3,18 @@ package com.ulearing.versionmanagement.version.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.ulearing.versionmanagement.enums.LogStatusEnum;
-import com.ulearing.versionmanagement.user.dao.UserDao;
+import com.ulearing.versionmanagement.user.service.UserService;
 import com.ulearing.versionmanagement.util.PageUtil;
 import com.ulearing.versionmanagement.version.dao.VersionDao;
-import com.ulearing.versionmanagement.version.dto.GetLogsRequest;
-import com.ulearing.versionmanagement.version.dto.ProjectTagDTO;
-import com.ulearing.versionmanagement.version.dto.UpdateLogDTO;
+import com.ulearing.versionmanagement.version.dto.*;
 import com.ulearing.versionmanagement.version.model.ProjectModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 版本管理
@@ -28,7 +28,7 @@ public class VersionServiceImpl implements VersionService {
     VersionDao versionDao;
 
     @Autowired
-    UserDao userDao;
+    UserService userService;
 
     @Override
     public List<ProjectModel> getProjectList(Integer region) {
@@ -45,12 +45,8 @@ public class VersionServiceImpl implements VersionService {
         PageInfo<UpdateLogDTO> pageInfo = PageHelper.startPage(request.getPage(), request.getPageSize())
                                           .doSelectPageInfo(() -> versionDao.getUpdateLogs(request));
         pageInfo.getList().forEach(res -> {
-            if (res.getDevUserId() != null) {
-                res.setDevUserName(userDao.getUserName(res.getDevUserId()));
-            }
-            if (res.getOpsUserId() != null) {
-                res.setOpsUserName(userDao.getUserName(res.getOpsUserId()));
-            }
+            res.setDevUserName(userService.getUserName(res.getDevUserId()));
+            res.setOpsUserName(userService.getUserName(res.getOpsUserId()));
         });
         return new PageUtil<>(pageInfo);
     }
@@ -82,4 +78,38 @@ public class VersionServiceImpl implements VersionService {
         }
         return list;
     }
+
+    @Override
+    public List<VersionHisDTO> getVersionHis(Integer region, Integer projectId) {
+        List<VersionHisDTO> versionHis = versionDao.getVersionHis(region, projectId);
+        versionHis.forEach(res -> {
+            res.setDevUserName(userService.getUserName(res.getDevUserId()));
+            res.setOpsUserName(userService.getUserName(res.getOpsUserId()));
+        });
+        return versionHis;
+    }
+
+    @Override
+    public void commitLog(List<CommitLogRequest> request) {
+        for (CommitLogRequest commitLogRequest : request) {
+
+            // 写入log表
+            commitLogRequest.setStatus(LogStatusEnum.STATUS_DGX.getCode());
+            // TODO: 2020-09-21 获取提交人userId
+            commitLogRequest.setDevUserId(1);
+            Integer logId = versionDao.insertLog(commitLogRequest);
+            if (logId == null) {
+                throw new RuntimeException("写入日志信息失败");
+            }
+
+            // 写入version表
+            if (!CollectionUtils.isEmpty(commitLogRequest.getProjectVersionList())) {
+                for (ProjectVersionDTO projectVersion : commitLogRequest.getProjectVersionList()) {
+                    projectVersion.setLogId(logId);
+                    versionDao.insertVersion(projectVersion);
+                }
+            }
+        }
+    }
+
 }

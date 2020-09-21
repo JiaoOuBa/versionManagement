@@ -1,5 +1,6 @@
 package com.ulearing.versionmanagement.version.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
@@ -19,10 +20,14 @@ public class VersionHisDTO {
     private String projectName;
 
     /* log记录相关字段 */
-    @ApiModelProperty("开发人员id")
+    @JsonIgnore
     private Integer devUserId;
-    @ApiModelProperty("运维人员id")
+    @JsonIgnore
     private Integer opsUserId;
+    @ApiModelProperty("开发人员")
+    private String devUserName;
+    @ApiModelProperty("运维人员")
+    private String opsUserName;
     @ApiModelProperty("更新说明")
     private String description;
     @ApiModelProperty("创建时间")
@@ -37,12 +42,14 @@ public class VersionHisDTO {
     public VersionHisDTO() {
     }
 
-    public VersionHisDTO(Integer region, Integer projectId, String projectName, Integer devUserId, Integer opsUserId, String description, Date createTime, Date updateTime, String version) {
+    public VersionHisDTO(Integer region, Integer projectId, String projectName, Integer devUserId, Integer opsUserId, String devUserName, String opsUserName, String description, Date createTime, Date updateTime, String version) {
         this.region = region;
         this.projectId = projectId;
         this.projectName = projectName;
         this.devUserId = devUserId;
         this.opsUserId = opsUserId;
+        this.devUserName = devUserName;
+        this.opsUserName = opsUserName;
         this.description = description;
         this.createTime = createTime;
         this.updateTime = updateTime;
@@ -119,5 +126,21 @@ public class VersionHisDTO {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public String getDevUserName() {
+        return devUserName;
+    }
+
+    public void setDevUserName(String devUserName) {
+        this.devUserName = devUserName;
+    }
+
+    public String getOpsUserName() {
+        return opsUserName;
+    }
+
+    public void setOpsUserName(String opsUserName) {
+        this.opsUserName = opsUserName;
     }
 }
