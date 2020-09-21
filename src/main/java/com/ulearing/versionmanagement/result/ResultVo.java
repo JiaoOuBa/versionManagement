@@ -23,6 +23,10 @@ public class ResultVo<T> {
     @ApiModelProperty("结果集")
     private T result;
 
+    public ResultVo() {
+        this.setCode(ResultEnum.SUCCESS.getCode());
+        this.setMessage(ResultEnum.SUCCESS.getMsg());
+    }
 
     public ResultVo(Integer code, String message, T result) {
         this.setCode(code);
