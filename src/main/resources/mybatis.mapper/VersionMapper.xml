@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ulearing.versionmanagement.version.dao.VersionDao">
+
+    <select id="getUpdateLogs" resultType="com.ulearing.versionmanagement.version.dto.UpdateLogDTO">
+        select * from l_updatelog_tab
+        where 1=1
+        <if test="region != null">and region = #{region}</if>
+        order by createTime desc
+    </select>
+
+    <delete id="deleteLogs">
+        delete from l_updatelog_tab
+        where 1= 1 and id in
+        <foreach collection="logIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
