@@ -1,10 +1,12 @@
 package com.ulearing.versionmanagement.user.controller;
 
+import com.ulearing.versionmanagement.config.annotation.PassToken;
 import com.ulearing.versionmanagement.enums.ResultEnum;
 import com.ulearing.versionmanagement.result.Result;
 import com.ulearing.versionmanagement.result.ResultVo;
 import com.ulearing.versionmanagement.user.dto.LoginDTO;
 import com.ulearing.versionmanagement.user.service.UserService;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +26,8 @@ public class UserController {
 
     @ApiOperation(value = "登录")
     @PostMapping("/login")
+    @PassToken
+    @ApiImplicitParam(name = "Authorization", access = "hidden")
     public ResultVo login(@RequestBody LoginDTO loginDTO) {
         try {
             return userService.login(loginDTO);
